@@ -5,8 +5,11 @@ import { notFound } from "next/navigation";
 import { properties } from "@/lib/properties";
 import { Box, Container, Heading, Text, SimpleGrid, Image, HStack, Tag } from "@chakra-ui/react";
 
-export default function PropertyDetail({ params }: { params: { id: string } }) {
-  const prop = properties.find((p) => p.id === params.id);
+// Add 'async' to the function
+export default async function PropertyDetail({ params }: { params: { id: string } }) {
+  // Await the params to get the value
+  const finalParams = await params;
+  const prop = properties.find((p) => p.id === finalParams.id);
   if (!prop) return notFound();
 
   return (
