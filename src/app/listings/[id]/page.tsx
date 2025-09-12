@@ -1,58 +1,150 @@
 // src/app/listings/[id]/page.tsx
 import React from "react";
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import { properties } from "@/lib/properties";
-import { Box, Container, Heading, Text, SimpleGrid, Image, HStack, Tag } from "@chakra-ui/react";
 
-// Add 'async' to the function
-export default async function PropertyDetail({ params }: { params: { id: string } }) {
-  // Await the params to get the value
-  const finalParams = await params;
-  const prop = properties.find((p) => p.id === finalParams.id);
-  if (!prop) return notFound();
+type PageProps = { params: { id: string } };
 
+// Server component — safe to be async; fetch data here
+export default async function ListingPage({ params }: PageProps) {
+  const { id } = params;
+
+  // TODO: replace with your real API call
+  // const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/listings/${id}`, { cache: "no-store" });
+  // const listing = await res.json();
+
+  // Temporary placeholder listing while you wire the API
+  const listing = {
+    id,
+    title: "3 BHK Spacious Apartment",
+    price: "₹50,00,000",
+    location: "Sample City, MG Road",
+    status: "Available",
+    description:
+      "A bright and airy 3 BHK with ample cross-ventilation, modern fittings, and easy access to metro and shops.",
+    images: [
+      // replace or remove if you fetch real images
+      "/placeholder-1.jpg",
+      "/placeholder-2.jpg",
+    ],
+    features: ["3 Bedrooms", "2 Bathrooms", "Balcony", "Covered Parking"],
+  };
+
+  return <ListingClient listing={listing} />;
+}
+
+/* -------------------------------
+   Client component: renders UI
+   (uses Chakra primitives so it must be a client)
+   ------------------------------- */
+"use client";
+import {
+  Box,
+  Heading,
+  Text,
+  VStack,
+  HStack,
+  Badge,
+  List,
+  ListItem,
+  Stack,
+  Image,
+  Button,
+  Spacer,
+} from "@chakra-ui/react";
+import React from "react";
+
+type Listing = {
+  id: string;
+  title: string;
+  price: string;
+  location: string;
+  status: string;
+  description: string;
+  images?: string[];
+  features?: string[];
+};
+
+function ListingClient({ listing }: { listing: Listing }) {
   return (
-    <Container maxW="container.lg" py={8}>
-      <HStack justify="space-between" align="start" mb={4}>
-        <div>
-          <Heading>{prop.title}</Heading>
-          <Text color="muted.500">{prop.location} · {prop.type}</Text>
-        </div>
-        <Tag colorScheme="brand" fontWeight="600" size="lg">₹{prop.price.toLocaleString("en-IN")}</Tag>
-      </HStack>
+    <Box maxW="6xl" mx="auto" px={6} py={10}>
+      <Stack direction={{ base: "column", md: "row" }} spacing={8} align="flex-start">
+        {/* Left: Images / Gallery */}
+        <VStack spacing={4} align="stretch" w={{ base: "100%", md: "60%" }}>
+          {listing.images && listing.images.length > 0 ? (
+            <Image
+              src={listing.images[0]}
+              alt={listing.title}
+              borderRadius="md"
+              objectFit="cover"
+              w="100%"
+              h={{ base: "220px", md: "360px" }}
+            />
+          ) : (
+            <Box
+              w="100%"
+              h={{ base: "220px", md: "360px" }}
+              borderRadius="md"
+              bg="gray.50"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Text color="gray.400">No image</Text>
+            </Box>
+          )}
 
-      <Box mb={6}>
-        <Link href="/listings" style={{ color: "inherit", textDecoration: "underline" }}>
-          ← Back to listings
-        </Link>
-      </Box>
-
-      <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
-        <Box gridColumn={{ base: "1", md: "1 / span 2" }}>
-          <Image src={prop.images[0]} alt={prop.title} width="100%" height="480px" objectFit="cover" borderRadius="md" />
-        </Box>
-
-        <Box>
-          <Heading size="sm" mb={3}>Quick facts</Heading>
-          <Text mb={2}><strong>Bedrooms:</strong> {prop.bedrooms}</Text>
-          <Text mb={2}><strong>Type:</strong> {prop.type}</Text>
-          <Text mb={2}><strong>Location:</strong> {prop.location}</Text>
-          <Box mt={4} borderWidth="1px" borderRadius="md" p={3}>
-            <Text fontSize="sm" color="muted.500">{prop.description}</Text>
-          </Box>
-        </Box>
-
-        {/* extra photos below */}
-        <Box gridColumn={{ base: "1", md: "1 / span 3" }} mt={6}>
-          <Heading size="md" mb={3}>Photos</Heading>
-          <SimpleGrid columns={{ base: 2, md: 4 }} spacing={3}>
-            {prop.images.map((src) => (
-              <Image key={src} src={src} alt={prop.title} objectFit="cover" height="140px" width="100%" borderRadius="md" />
+          <HStack spacing={3}>
+            {listing.images?.slice(0, 3).map((src, i) => (
+              <Image
+                key={i}
+                src={src}
+                alt={`${listing.title}-${i}`}
+                boxSize="72px"
+                objectFit="cover"
+                borderRadius="md"
+              />
             ))}
-          </SimpleGrid>
+          </HStack>
+        </VStack>
+
+        {/* Right: Details */}
+        <Box w={{ base: "100%", md: "40%" }}>
+          <HStack mb={3} align="center">
+            <Heading as="h1" size="lg">
+              {listing.title}
+            </Heading>
+            <Spacer />
+            <Badge colorScheme={listing.status === "Available" ? "green" : "red"}>
+              {listing.status}
+            </Badge>
+          </HStack>
+
+          <Text fontSize="lg" fontWeight="semibold" mb={2}>
+            {listing.price}
+          </Text>
+
+          <Text color="gray.600" mb={4}>
+            📍 {listing.location}
+          </Text>
+
+          <Text mb={4}>{listing.description}</Text>
+
+          <Box mb={6}>
+            <Heading as="h3" size="sm" mb={2}>
+              Features
+            </Heading>
+            <List spacing={2}>
+              {listing.features?.map((f, idx) => (
+                <ListItem key={idx}>• {f}</ListItem>
+              ))}
+            </List>
+          </Box>
+
+          <HStack spacing={3}>
+            <Button colorScheme="teal">Contact Agent</Button>
+            <Button variant="outline">Schedule Visit</Button>
+          </HStack>
         </Box>
-      </SimpleGrid>
-    </Container>
+      </Stack>
+    </Box>
   );
 }
