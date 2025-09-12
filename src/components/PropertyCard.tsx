@@ -1,4 +1,6 @@
 // src/components/PropertyCard.tsx
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import {
@@ -17,23 +19,26 @@ export default function PropertyCard({ property }: { property: Property }) {
     <Box
       borderWidth="1px"
       borderColor="gray.700"
-      borderRadius="md"
+      borderRadius="lg"
       overflow="hidden"
       bg="gray.900"
-      _hover={{ boxShadow: "lg", transform: "translateY(-4px)" }}
-      transition="all 200ms ease"
+      _hover={{ boxShadow: "lg", transform: "translateY(-6px)" }}
+      transition="transform 180ms ease, box-shadow 180ms ease"
       display="flex"
       flexDirection="column"
+      minH="460px"       /* ensures row alignment */
     >
-      {/* Image */}
-      <Box height="220px" overflow="hidden">
+      {/* Image area — fixed height so all cards align */
+      /* adjust height if you want taller images (e.g. 300px) */}
+      <Box height="260px" overflow="hidden" flex="0 0 auto" bg="gray.800">
         <Image
-          src={property.images[0]}
+          src={property.images?.[0] ?? "/placeholder.jpg"}
           alt={property.title}
           width="100%"
           height="100%"
           objectFit="cover"
           loading="lazy"
+          style={{ display: "block" }}
         />
       </Box>
 
@@ -69,20 +74,20 @@ export default function PropertyCard({ property }: { property: Property }) {
           {property.bedrooms} bd
         </Text>
 
+        {/* spacer to push the button to the footer of the card */}
         <Box flex="1" />
 
-        {/* Enquire button (white rectangle, black text) */}
+        {/* Enquire button — white rounded rectangle with black text */}
         <Button
           as={Link}
           href={`/listings/${property.id}`}
-          variant="outline"
-          border="2px solid white"
-          borderRadius="md"
+          variant="solid"
           bg="white"
           color="black"
           fontWeight="600"
           size="sm"
           width="full"
+          borderRadius="md"
           _hover={{ bg: "gray.100" }}
         >
           Enquire Now
