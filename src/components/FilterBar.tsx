@@ -1,131 +1,117 @@
-// src/components/FilterBar.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Box, HStack, VStack, Text, Button } from "@chakra-ui/react";
+import React from "react";
+import {
+  Box,
+  HStack,
+  VStack,
+  Select,
+  Text,
+  Button,
+  Slider,
+} from "@chakra-ui/react";
 
-type FilterState = {
-  type: string;
-  bedrooms: number | null;
-  range: [number, number];
-};
-
-export default function FilterBar({
-  min,
-  max,
-  onChange,
-  initial,
-  types,
-}: {
+interface FilterBarProps {
   min: number;
   max: number;
-  initial?: FilterState;
   types: string[];
-  onChange: (s: FilterState) => void;
-}) {
-  const [range, setRange] = useState<[number, number]>(initial?.range ?? [min, max]);
-  const [type, setType] = useState<string>(initial?.type ?? "All");
-  const [bedrooms, setBedrooms] = useState<number | null>(initial?.bedrooms ?? null);
+  initial: { type: string; bedrooms: number | null; range: [number, number] };
+  onChange: (filter: any) => void;
+}
 
-  useEffect(() => {
+const FilterBar = ({ min, max, types, initial, onChange }: FilterBarProps) => {
+  const [type, setType] = React.useState(initial.type);
+  const [bedrooms, setBedrooms] = React.useState<number | null>(initial.bedrooms);
+  const [range, setRange] = React.useState<[number, number]>(initial.range);
+
+  const handleApply = () => {
     onChange({ type, bedrooms, range });
-  }, [type, bedrooms, range, onChange]);
+  };
 
-  const reset = () => {
+  const handleReset = () => {
     setType("All");
     setBedrooms(null);
     setRange([min, max]);
+    onChange({ type: "All", bedrooms: null, range: [min, max] });
   };
 
   return (
-    <VStack align="stretch" spacing={5}>
+    // FIX: Changed spacing={5} to gap={5}
+    <VStack align="stretch" gap={5}>
       {/* Top row */}
-      <HStack spacing={4} justify="space-between" flexWrap="wrap">
-        <HStack spacing={3}>
-          {/* Property type */}
-          <label>
-            <Text fontSize="sm" fontWeight="500" mr={2}>
-              Type
+      {/* FIX: Changed spacing={4} to gap={4} */}
+      <HStack gap={4} justify="space-between" flexWrap="wrap">
+        {/* FIX: Changed spacing={3} to gap={3} */}
+        <HStack gap={3}>
+          <Box minW="150px">
+            <Text fontSize="xs" fontWeight="bold" color="gray.500" mb={1} textTransform="uppercase">
+              Property Type
             </Text>
-            <select
-              value={type}
-              onChange={(e) => setType(e.target.value)}
-              style={{ padding: "6px 10px", borderRadius: 6, border: "1px solid #ccc" }}
-            >
-              <option value="All">All types</option>
+            <Select value={type} onChange={(e) => setType(e.target.value)} color="white" bg="whiteAlpha.100" border="none">
+              <option value="All">All Types</option>
               {types.map((t) => (
-                <option key={t} value={t}>
-                  {t}
-                </option>
+                <option key={t} value={t}>{t}</option>
               ))}
-            </select>
-          </label>
+            </Select>
+          </Box>
 
-          {/* Bedrooms */}
-          <label>
-            <Text fontSize="sm" fontWeight="500" mr={2}>
-              Beds
+          <Box minW="150px">
+            <Text fontSize="xs" fontWeight="bold" color="gray.500" mb={1} textTransform="uppercase">
+              Min. Bedrooms
             </Text>
-            <select
-              value={bedrooms ?? ""}
-              onChange={(e) => {
-                const v = e.target.value;
-                setBedrooms(v === "" ? null : Number(v));
-              }}
-              style={{ padding: "6px 10px", borderRadius: 6, border: "1px solid #ccc" }}
+            <Select 
+              value={bedrooms || ""} 
+              onChange={(e) => setBedrooms(e.target.value ? parseInt(e.target.value) : null)}
+              color="white" 
+              bg="whiteAlpha.100" 
+              border="none"
             >
               <option value="">Any</option>
-              <option value="1">1+</option>
-              <option value="2">2+</option>
-              <option value="3">3+</option>
-              <option value="4">4+</option>
-            </select>
-          </label>
+              {[1, 2, 3, 4, 5].map((n) => (
+                <option key={n} value={n}>{n}+ BHK</option>
+              ))}
+            </Select>
+          </Box>
         </HStack>
 
-        <HStack spacing={3}>
-          <Text fontSize="sm" color="muted.500">
-            Price
-          </Text>
-          <Text fontSize="sm" fontWeight="600">
-            ₹{range[0].toLocaleString("en-IN")} – ₹{range[1].toLocaleString("en-IN")}
-          </Text>
-          <Button size="sm" onClick={reset}>
+        <HStack gap={3} align="flex-end">
+          <Button onClick={handleReset} variant="ghost" color="gray.400" _hover={{ color: "white" }}>
             Reset
+          </Button>
+          <Button onClick={handleApply} bg="white" color="black" _hover={{ bg: "gray.200" }}>
+            Apply Filters
           </Button>
         </HStack>
       </HStack>
 
-      {/* Price sliders */}
-      <Box>
-        <Text fontSize="sm" mb={1}>
-          Adjust Price Range
+      {/* Price Range Row */}
+      <Box pt={2}>
+        <Text fontSize="xs" fontWeight="bold" color="gray.500" mb={4} textTransform="uppercase">
+          Price Range: £{range[0].toLocaleString()} - £{range[1].toLocaleString()}
         </Text>
-        <HStack spacing={4} align="center">
-          <input
-            type="range"
-            min={min}
-            max={max}
-            step={100000}
-            value={range[0]}
-            onChange={(e) => setRange([Number(e.target.value), range[1]])}
-            style={{ flex: 1 }}
-          />
-          <input
-            type="range"
-            min={min}
-            max={max}
-            step={100000}
-            value={range[1]}
-            onChange={(e) => setRange([range[0], Number(e.target.value)])}
-            style={{ flex: 1 }}
-          />
-        </HStack>
-        <HStack justify="space-between" mt={2}>
-          <Text fontSize="xs">₹{min.toLocaleString("en-IN")}</Text>
-          <Text fontSize="xs">₹{max.toLocaleString("en-IN")}</Text>
-        </HStack>
+        {/* If your Slider component also fails, ensure it follows the new v3 pattern or use standard inputs */}
+        <Box px={2}>
+          {/* Note: In Chakra v3, RangeSlider often requires specific sub-components. 
+              If this Slider causes a type error next, we may need to update its structure. */}
+          <Slider.Root 
+            min={min} 
+            max={max} 
+            step={10000} 
+            value={range} 
+            onValueChange={(details) => setRange(details.value as [number, number])}
+          >
+            <Slider.Control>
+              <Slider.Track>
+                <Slider.Range />
+              </Slider.Track>
+              <Slider.Thumb index={0} />
+              <Slider.Thumb index={1} />
+            </Slider.Control>
+          </Slider.Root>
+        </Box>
       </Box>
     </VStack>
   );
-}
+};
+
+export default FilterBar;
