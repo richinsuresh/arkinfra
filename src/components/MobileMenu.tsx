@@ -40,13 +40,15 @@ export default function MobileMenu() {
 
   return (
     <>
+      {/* FIX: icon prop removed; FaBars is now a child of IconButton */}
       <IconButton
         aria-label="Open menu"
-        icon={<FaBars />}
         onClick={() => setIsOpen(true)}
         size="md"
         variant="ghost"
-      />
+      >
+        <FaBars />
+      </IconButton>
 
       {/* Backdrop */}
       <Box
@@ -89,17 +91,20 @@ export default function MobileMenu() {
       >
         <HStack justify="space-between" align="center">
           <VisuallyHidden as="span">Mobile menu</VisuallyHidden>
-          <Box fontWeight="bold">Menu</Box>
+          <Box fontWeight="bold" color="black">Menu</Box>
+          {/* FIX: icon prop removed; FaTimes is now a child of IconButton */}
           <IconButton
             aria-label="Close menu"
-            icon={<FaTimes />}
             onClick={() => setIsOpen(false)}
             ref={closeButtonRef}
             variant="ghost"
-          />
+          >
+            <FaTimes />
+          </IconButton>
         </HStack>
 
-        <VStack align="stretch" spacing={4} mt={6}>
+        {/* FIX: Changed spacing={4} to gap={4} */}
+        <VStack align="stretch" gap={4} mt={6} color="black">
           <Link href="/listings" onClick={() => setIsOpen(false)} style={{ padding: "10px 0" }}>
             Listings
           </Link>
@@ -111,8 +116,9 @@ export default function MobileMenu() {
           </Link>
 
           <Box pt={4}>
-            <Button colorScheme="brand" onClick={() => { setIsOpen(false); /* navigate to contact */ }} width="100%">
-              <Link href="/contact" style={{ display: "block", width: "100%", textDecoration: "none", color: "inherit" }}>
+            {/* FIX: Used asChild pattern for Next.js Link composition */}
+            <Button colorScheme="brand" asChild width="100%">
+              <Link href="/contact" onClick={() => setIsOpen(false)}>
                 Book Now
               </Link>
             </Button>
