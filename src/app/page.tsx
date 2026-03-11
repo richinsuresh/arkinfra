@@ -1,125 +1,133 @@
-// src/app/page.tsx
-import { Box, Container, Heading, Text, HStack, Button, VStack } from "@chakra-ui/react";
-import ImageGallery from "@/components/ImageGallery";
+'use client';
 
-const GALLERY_IMAGES = [
-  { src: "/properties/p1/1.jpg", alt: "Skyline 2BHK Apartment" },
-  { src: "/properties/p2/1.jpg", alt: "Seaside Luxury Villa" },
-  { src: "/properties/p3/1.jpg", alt: "Urban Studio" },
-  { src: "/properties/p4/1.jpg", alt: "Business Park Office" },
-  { src: "/properties/p5/1.jpg", alt: "Green Meadows 3BHK" },
-  { src: "/properties/p6/1.jpg", alt: "Penthouse Royale" },
-];
+import React from 'react';
+import Link from 'next/link';
+import {
+  Box,
+  Container,
+  Heading,
+  Text,
+  Button,
+  VStack,
+  HStack,
+  SimpleGrid,
+  Icon,
+} from '@chakra-ui/react';
+import { FiHome, FiMapPin, FiShield, FiArrowRight } from 'react-icons/fi';
+import Section from '@/components/Section';
 
 export default function Home() {
   return (
-    <>
-      {/* FULLSCREEN HERO */}
+    <Box as="main" bg="black" color="white">
+      {/* Hero Section */}
       <Box
-        as="header"
         position="relative"
-        width="100%"
-        height="100vh"
-        maxHeight="1000px"
-        overflow="hidden"
-        bgImage="url('/hero-large.jpg')"
-        bgSize="cover"
-        bgPos="center"
+        h="90vh"
+        w="full"
+        display="flex"
+        alignItems="center"
+        backgroundImage="url('/hero-large.jpg')"
+        backgroundSize="cover"
+        backgroundPosition="center"
+        _after={{
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          bg: 'rgba(0,0,0,0.6)',
+          zIndex: 1,
+        }}
       >
-        {/* darker overlay so white text shines */}
-        <Box
-          position="absolute"
-          inset={0}
-          bgGradient="linear(to-b, rgba(0,0,0,0.75), rgba(0,0,0,0.5))"
-          zIndex={1}
-        />
-
-        <Container
-          maxW="1100px"
-          position="relative"
-          zIndex={2}
-          height="100%"
-          display="flex"
-          alignItems="center"
-        >
-          <VStack align="start" spacing={6} maxW="720px">
+        <Container maxW="1100px" position="relative" zIndex={2}>
+          {/* FIX: Changed spacing={6} to gap={6} */}
+          <VStack align="start" gap={6} maxW="720px">
             <Heading
               as="h1"
-              fontSize={{ base: "3xl", md: "5xl", lg: "6xl" }}
-              color="white"
-              fontWeight={800}
-              lineHeight="1.05"
+              fontSize={{ base: '4xl', md: '6xl' }}
+              fontWeight="bold"
+              lineHeight="1.1"
               letterSpacing="-0.02em"
             >
-              Exceptional properties, crafted for living.
+              Building the Infrastructure of Tomorrow
             </Heading>
-
-            <Text
-              fontSize={{ base: "md", md: "lg" }}
-              color="gray.300"
-              maxW="2xl"
-              fontWeight={400}
-            >
-              Discover our curated portfolio of premium apartments, villas and commercial spaces —
-              photography-first presentation and international standards.
+            <Text fontSize={{ base: 'lg', md: 'xl' }} color="gray.300">
+              Arkinfra leads the way in premium real estate and sustainable
+              infrastructure development. Discover spaces designed for living
+              well.
             </Text>
-
-            <HStack spacing={4}>
-              <Button size="lg" colorScheme="brand" as="a" href="/listings">
-                View listings
-              </Button>
+            {/* FIX: Changed spacing={4} to gap={4} */}
+            <HStack gap={4} pt={4}>
               <Button
+                as={Link}
+                href="/listings"
                 size="lg"
-                variant="outline"
-                borderColor="gray.500"
-                color="white"
-                as="a"
-                href="/contact"
+                bg="white"
+                color="black"
+                px={8}
+                _hover={{ bg: 'gray.200' }}
+                rightIcon={<FiArrowRight />}
               >
-                Contact us
+                View Properties
               </Button>
             </HStack>
           </VStack>
         </Container>
       </Box>
 
-      {/* FEATURED GALLERY */}
-      <Box
-        as="section"
-        width="100%"
-        minHeight="80vh"
-        py={{ base: 12, md: 20 }}
-        bg="var(--page-bg)"
-      >
-        <Container maxW="1100px" mb={10} textAlign="center">
-          <Heading
-            as="h2"
-            fontSize={{ base: "3xl", md: "5xl", lg: "6xl" }}
-            fontWeight={800}
-            color="white"
-            mb={6}
-          >
-            Handpicked portfolio
-          </Heading>
+      {/* Features Section */}
+      <Section py={24}>
+        {/* FIX: Changed spacing={{ base: 12, md: 20 }} to gap={{ base: 12, md: 20 }} */}
+        <SimpleGrid columns={{ base: 1, md: 3 }} gap={{ base: 12, md: 20 }}>
+          <VStack align="start" gap={4}>
+            <Icon as={FiHome} boxSize={8} color="white" />
+            <Heading size="md">Premium Quality</Heading>
+            <Text color="gray.400">
+              We use the highest grade materials and modern architectural
+              designs to ensure lasting value.
+            </Text>
+          </VStack>
 
-          <Text
-            fontSize={{ base: "md", md: "lg" }}
-            color="gray.400"
-            maxW="3xl"
-            marginLeft="auto"
-            marginRight="auto"
-            fontWeight={400}
-            mb={10}
-          >
-            Photography-first presentation — click any image to view larger. We feature a selection
-            of premium properties curated for international standards.
-          </Text>
-        </Container>
+          <VStack align="start" gap={4}>
+            <Icon as={FiMapPin} boxSize={8} color="white" />
+            <Heading size="md">Prime Locations</Heading>
+            <Text color="gray.400">
+              Our projects are strategically located in high-growth areas with
+              excellent connectivity.
+            </Text>
+          </VStack>
 
-        <Container maxW="1100px" px={0}>
-          <ImageGallery images={GALLERY_IMAGES} />
+          <VStack align="start" gap={4}>
+            <Icon as={FiShield} boxSize={8} color="white" />
+            <Heading size="md">Trusted Legacy</Heading>
+            <Text color="gray.400">
+              With decades of experience, we have built a reputation for
+              transparency and timely delivery.
+            </Text>
+          </VStack>
+        </SimpleGrid>
+      </Section>
+
+      {/* CTA Section */}
+      <Box py={24} borderTop="1px solid" borderColor="whiteAlpha.200">
+        <Container maxW="1100px">
+          <VStack gap={8} textAlign="center">
+            <Heading size="2xl">Ready to find your next home?</Heading>
+            <Button
+              as={Link}
+              href="/listings"
+              size="lg"
+              variant="outline"
+              color="white"
+              px={10}
+              _hover={{ bg: 'white', color: 'black' }}
+            >
+              Explore Listings
+            </Button>
+          </VStack>
         </Container>
       </Box>
-    </>
+    </Box>
   );
 }
