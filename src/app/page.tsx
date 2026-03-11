@@ -41,7 +41,6 @@ export default function Home() {
         }}
       >
         <Container maxW="1100px" position="relative" zIndex={2}>
-          {/* FIX: Changed spacing={6} to gap={6} */}
           <VStack align="start" gap={6} maxW="720px">
             <Heading
               as="h1"
@@ -57,19 +56,19 @@ export default function Home() {
               infrastructure development. Discover spaces designed for living
               well.
             </Text>
-            {/* FIX: Changed spacing={4} to gap={4} */}
             <HStack gap={4} pt={4}>
+              {/* FIX: Used asChild to properly compose Button with Next.js Link */}
               <Button
-                as={Link}
-                href="/listings"
+                asChild
                 size="lg"
                 bg="white"
                 color="black"
                 px={8}
                 _hover={{ bg: 'gray.200' }}
-                rightIcon={<FiArrowRight />}
               >
-                View Properties
+                <Link href="/listings">
+                  View Properties <Icon as={FiArrowRight} ml={2} />
+                </Link>
               </Button>
             </HStack>
           </VStack>
@@ -78,7 +77,6 @@ export default function Home() {
 
       {/* Features Section */}
       <Section py={24}>
-        {/* FIX: Changed spacing={{ base: 12, md: 20 }} to gap={{ base: 12, md: 20 }} */}
         <SimpleGrid columns={{ base: 1, md: 3 }} gap={{ base: 12, md: 20 }}>
           <VStack align="start" gap={4}>
             <Icon as={FiHome} boxSize={8} color="white" />
@@ -114,16 +112,16 @@ export default function Home() {
         <Container maxW="1100px">
           <VStack gap={8} textAlign="center">
             <Heading size="2xl">Ready to find your next home?</Heading>
+            {/* FIX: Used asChild here as well */}
             <Button
-              as={Link}
-              href="/listings"
+              asChild
               size="lg"
               variant="outline"
               color="white"
               px={10}
               _hover={{ bg: 'white', color: 'black' }}
             >
-              Explore Listings
+              <Link href="/listings">Explore Listings</Link>
             </Button>
           </VStack>
         </Container>
