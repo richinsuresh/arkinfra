@@ -18,7 +18,7 @@ export default function Footer() {
           </Text>
 
           {/* Contact links */}
-          {/* FIX: Changed 'spacing={6}' to 'gap={6}' to resolve Type Error */}
+          {/* FIX: Changed 'spacing' to 'gap' for Chakra UI v3 compatibility */}
           <HStack gap={6}>
             <ChakraLink href="tel:+919876543210" color="white" _hover={{ color: "blue.400" }}>
               +91 98765 43210
