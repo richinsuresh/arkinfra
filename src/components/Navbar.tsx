@@ -25,22 +25,23 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop nav */}
-        <HStack spacing={6} display={{ base: "none", md: "flex" }}>
+        {/* FIX: Changed 'spacing' to 'gap' */}
+        <HStack gap={6} display={{ base: "none", md: "flex" }}>
           <Link href="/listings" style={{ color: "white" }}>Listings</Link>
           <Link href="/about" style={{ color: "white" }}>About</Link>
           <Link href="/contact" style={{ color: "white" }}>Contact</Link>
         </HStack>
 
-        <HStack spacing={3}>
-          {/* CTA */}
+        {/* FIX: Changed 'spacing' to 'gap' */}
+        <HStack gap={3}>
+          {/* CTA - FIX: Used 'asChild' to properly compose Button with Next.js Link */}
           <Button
-            as={Link}
-            href="/contact"
+            asChild
             colorScheme="brand"
             size="sm"
             _hover={{ bg: "blue.500" }}
           >
-            Book Now
+            <Link href="/contact">Book Now</Link>
           </Button>
 
           {/* Mobile menu */}
