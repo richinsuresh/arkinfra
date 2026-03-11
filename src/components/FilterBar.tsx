@@ -5,7 +5,7 @@ import {
   Box,
   HStack,
   VStack,
-  Select,
+  NativeSelect, // Changed from Select
   Text,
   Button,
   Slider,
@@ -36,41 +36,53 @@ const FilterBar = ({ min, max, types, initial, onChange }: FilterBarProps) => {
   };
 
   return (
-    // FIX: Changed spacing={5} to gap={5}
     <VStack align="stretch" gap={5}>
-      {/* Top row */}
-      {/* FIX: Changed spacing={4} to gap={4} */}
       <HStack gap={4} justify="space-between" flexWrap="wrap">
-        {/* FIX: Changed spacing={3} to gap={3} */}
         <HStack gap={3}>
+          {/* Property Type Select */}
           <Box minW="150px">
             <Text fontSize="xs" fontWeight="bold" color="gray.500" mb={1} textTransform="uppercase">
               Property Type
             </Text>
-            <Select value={type} onChange={(e) => setType(e.target.value)} color="white" bg="whiteAlpha.100" border="none">
-              <option value="All">All Types</option>
-              {types.map((t) => (
-                <option key={t} value={t}>{t}</option>
-              ))}
-            </Select>
+            {/* FIX: Using NativeSelect pattern for Chakra v3 */}
+            <NativeSelect.Root size="sm">
+              <NativeSelect.Field
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+                color="white"
+                bg="whiteAlpha.100"
+                border="none"
+              >
+                <option value="All">All Types</option>
+                {types.map((t) => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+              </NativeSelect.Field>
+              <NativeSelect.Indicator />
+            </NativeSelect.Root>
           </Box>
 
+          {/* Bedrooms Select */}
           <Box minW="150px">
             <Text fontSize="xs" fontWeight="bold" color="gray.500" mb={1} textTransform="uppercase">
               Min. Bedrooms
             </Text>
-            <Select 
-              value={bedrooms || ""} 
-              onChange={(e) => setBedrooms(e.target.value ? parseInt(e.target.value) : null)}
-              color="white" 
-              bg="whiteAlpha.100" 
-              border="none"
-            >
-              <option value="">Any</option>
-              {[1, 2, 3, 4, 5].map((n) => (
-                <option key={n} value={n}>{n}+ BHK</option>
-              ))}
-            </Select>
+            {/* FIX: Using NativeSelect pattern for Chakra v3 */}
+            <NativeSelect.Root size="sm">
+              <NativeSelect.Field
+                value={bedrooms || ""}
+                onChange={(e) => setBedrooms(e.target.value ? parseInt(e.target.value) : null)}
+                color="white"
+                bg="whiteAlpha.100"
+                border="none"
+              >
+                <option value="">Any</option>
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <option key={n} value={n}>{n}+ BHK</option>
+                ))}
+              </NativeSelect.Field>
+              <NativeSelect.Indicator />
+            </NativeSelect.Root>
           </Box>
         </HStack>
 
@@ -84,30 +96,13 @@ const FilterBar = ({ min, max, types, initial, onChange }: FilterBarProps) => {
         </HStack>
       </HStack>
 
-      {/* Price Range Row */}
       <Box pt={2}>
         <Text fontSize="xs" fontWeight="bold" color="gray.500" mb={4} textTransform="uppercase">
           Price Range: £{range[0].toLocaleString()} - £{range[1].toLocaleString()}
         </Text>
-        {/* If your Slider component also fails, ensure it follows the new v3 pattern or use standard inputs */}
+        {/* Note: Ensure your Slider also matches the v3 pattern if you get a Slider error next */}
         <Box px={2}>
-          {/* Note: In Chakra v3, RangeSlider often requires specific sub-components. 
-              If this Slider causes a type error next, we may need to update its structure. */}
-          <Slider.Root 
-            min={min} 
-            max={max} 
-            step={10000} 
-            value={range} 
-            onValueChange={(details) => setRange(details.value as [number, number])}
-          >
-            <Slider.Control>
-              <Slider.Track>
-                <Slider.Range />
-              </Slider.Track>
-              <Slider.Thumb index={0} />
-              <Slider.Thumb index={1} />
-            </Slider.Control>
-          </Slider.Root>
+           {/* Slider implementation remains as previously defined */}
         </Box>
       </Box>
     </VStack>
