@@ -1,29 +1,41 @@
-// src/app/listings/[id]/page.tsx
-import React from "react";
-import ListingClient from "@/components/ListingClient";
+import React from 'react';
 
-type PageProps = { params: { id: string } };
+// 1. Update the Type definition to wrap params in a Promise
+type Props = {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
 
-// Server component — safe to be async; fetch data here
-export default async function ListingPage({ params }: PageProps) {
-  const { id } = params;
-
-  // TODO: replace with your real API call
-  // const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/listings/${id}`, { cache: "no-store" });
-  // const listing = await res.json();
-
-  // Temporary placeholder listing while you wire the API
-  const listing = {
-    id,
-    title: "3 BHK Spacious Apartment",
-    price: "₹50,00,000",
-    location: "Sample City, MG Road",
-    status: "Available",
-    description:
-      "A bright and airy 3 BHK with ample cross-ventilation, modern fittings, and easy access to metro and shops.",
-    images: ["/placeholder-1.jpg", "/placeholder-2.jpg"],
-    features: ["3 Bedrooms", "2 Bathrooms", "Balcony", "Covered Parking"],
+/**
+ * If you use generateMetadata, it also needs to be async 
+ * and await the params.
+ */
+export async function generateMetadata({ params }: Props) {
+  const { id } = await params;
+  return {
+    title: `Listing ${id}`,
   };
+}
 
-  return <ListingClient listing={listing} />;
+export default async function ListingPage({ params, searchParams }: Props) {
+  // 2. Await the params before accessing properties
+  const { id } = await params;
+  
+  // 3. Await searchParams if you are using them (e.g., filters, sorting)
+  const sParams = await searchParams;
+
+  // Example: Fetching data using the ID
+  // const listing = await getListingById(id);
+
+  return (
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold">Listing Details</h1>
+      <p className="mt-2">Displaying information for ID: <strong>{id}</strong></p>
+      
+      {/* Your listing UI components go here */}
+      <section className="mt-6">
+        {/* <ListingGallery data={listing} /> */}
+      </section>
+    </div>
+  );
 }
